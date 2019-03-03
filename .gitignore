@@ -1,0 +1,11 @@
+__pycache__
+
+# Python Virtual Env
+env
+
+# Pycharm Files
+.DS_Store
+.idea
+
+# Database
+app.db
