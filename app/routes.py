@@ -5,21 +5,29 @@ from flask_login import current_user, login_required, login_user, logout_user
 from werkzeug.urls import url_parse
 
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfileForm
-from app.models import User
+from app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from app.models import User, Post
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @app.route('/index')
 @login_required
 def index():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post in now live!')
+        return redirect(url_for('index'))
     posts = [
         {'author': {'username': 'Isabella'},
          'body': 'My nose is runny'},
         {'author': {'username': 'Kai'},
          'body': 'I am a man cold kind of guy'}
     ]
-    return render_template('index.html', title='Home', posts=posts)
+    return render_template('index.html', title='Home Page', form=form,
+                           posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
