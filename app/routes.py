@@ -10,7 +10,7 @@ from app.models import User, Post
 
 
 @app.route('/', methods=['GET', 'POST'])
-@app.route('/index')
+@app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
     form = PostForm()
@@ -22,7 +22,7 @@ def index():
         return redirect(url_for('index'))
     posts = current_user.followed_posts().all()
     return render_template('index.html', title='Home Page', form=form,
-                           posts=posts)
+        posts=posts)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -134,3 +134,10 @@ def unfollow(username):
     db.session.commit()
     flash(f'You are not following {user}.')
     return redirect(url_for('user', username=username))
+
+
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Explore', posts=posts)
