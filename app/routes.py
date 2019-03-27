@@ -20,9 +20,11 @@ def index():
         db.session.commit()
         flash('Your post in now live!')
         return redirect(url_for('index'))
-    posts = current_user.followed_posts().all()
+    page = request.args.get('page', 1, type=int)
+    posts = current_user.followed_posts().paginate(
+        page, app.config['POSTS_PER_PAGE'], False)
     return render_template('index.html', title='Home Page', form=form,
-        posts=posts)
+        posts=posts.items)
 
 
 @app.route('/login', methods=['GET', 'POST'])
