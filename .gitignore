@@ -12,3 +12,6 @@ app.db
 
 # Log files
 logs
+
+# Debug email env
+debug_email_env.sh
